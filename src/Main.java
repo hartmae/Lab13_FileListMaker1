@@ -40,9 +40,9 @@ public class Main {
                     clearList();
                     break;
                 case "Q":
-                    if (saved) {
-                        System.out.println("You have unsaved changes. Please save your list before loading a new one.");
-                        return;
+                    if(!saved){
+                        System.out.println("Your list isn't saved, please save before leaving.");
+                        break;
                     }
                     if (SafeInput.getYNConfirm(in, "Are you sure you want to quit?").equalsIgnoreCase("y")) {
                         System.exit(0);
@@ -77,12 +77,14 @@ public class Main {
             System.out.println();
             return;
         }
+        saved = false;
         int target = SafeInput.getRangedInt(scanner, "Enter the number of the line that you will be deleting.", 1, lines.size());
         lines.remove(target - 1);
     }
     public static void add() {
         String message = SafeInput.getNonZeroLenString(scanner, "Enter your item");
         lines.add(message);
+        saved = false;
     }
 
     private static void openList() {
@@ -111,7 +113,7 @@ public class Main {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName + ".txt"))) {
             oos.writeObject(lines);
             System.out.println("Successfully saved.");
-            saved = false;
+            saved = true;
         } catch (IOException e) {
             System.out.println("Error saving the list: " + e.getMessage());
         }
